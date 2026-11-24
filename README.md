@@ -5,9 +5,11 @@ Two environments — push this folder to your GitHub, then connect it in QAMind 
 
 ## Environments
 
-| Env | Site | Hub artifact |
-|-----|------|--------------|
-| **staging** | https://www.saucedemo.com | `selenium-report-uat` |
+In **Actions → Daily Selenium → Run workflow** you pick **Where to run tests**:
+
+| Choice | Site | Hub artifact |
+|--------|------|--------------|
+| **uat** | https://www.saucedemo.com | `selenium-report-uat` |
 | **production** | https://the-internet.herokuapp.com/login | `selenium-report` |
 
 ## Push to GitHub
