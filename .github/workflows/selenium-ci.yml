@@ -1,0 +1,82 @@
+name: Selenium CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Which env to run (or both)
+        required: true
+        default: both
+        type: choice
+        options:
+          - both
+          - staging
+          - production
+
+jobs:
+  staging:
+    name: Staging
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.environment == 'both' ||
+      github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Show Chrome
+        run: google-chrome --version
+
+      - name: Run Staging suite
+        run: mvn -B clean test -Denv=staging -Dheadless=true
+
+      - name: Upload Staging report (Hub: selenium-report-uat)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-report-uat
+          path: target/surefire-reports/
+          if-no-files-found: warn
+          retention-days: 14
+
+  production:
+    name: Production
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.environment == 'both' ||
+      github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Show Chrome
+        run: google-chrome --version
+
+      - name: Run Production suite
+        run: mvn -B clean test -Denv=production -Dheadless=true
+
+      - name: Upload Production report (Hub: selenium-report)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-report
+          path: target/surefire-reports/
+          if-no-files-found: warn
+          retention-days: 14
