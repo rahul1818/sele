@@ -32,3 +32,8 @@ mvn -B clean test -Denv=production -Dheadless=true
 ```
 
 Needs Java 17+, Maven, Chrome.
+
+## Screenshots → QAMind Hub Evidence
+
+Each test saves `target/surefire-reports/screenshots/<methodName>.png`.  
+The Action uploads that folder inside `selenium-report` / `selenium-report-uat`, so Hub can show Evidence the same way it does for Playwright HTML report screenshots.
